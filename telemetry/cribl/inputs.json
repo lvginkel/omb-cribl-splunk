@@ -1,0 +1,17 @@
+{  
+"id":"telemetry",
+"type": "model_driven_telemetry",
+"disabled": false,
+"pqEnabled": false,
+"sendToRoutes": false,
+"host":"0.0.0.0",
+"port": 57000,
+"tls": {
+		"disabled": true
+},
+"connections":[
+		{
+				"output":"1"
+		}
+]
+}

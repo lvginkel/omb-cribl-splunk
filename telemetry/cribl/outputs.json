@@ -1,0 +1,12 @@
+{
+  "id": "1",
+  "type": "splunk_hec",
+  "authType": "manual",
+  "systemFields": [
+    "cribl_pipe"
+  ],
+  "loadBalanced": false,
+  "url": "http://splunk:8088/services/collector/event",
+  "token": "abcd1234",
+  "rejectUnauthorized": false
+}

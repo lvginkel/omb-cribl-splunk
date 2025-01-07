@@ -1,0 +1,33 @@
+services:
+  splunk:
+    image: ${SPLUNK_IMAGE:-splunk/splunk:latest}
+    container_name: so1
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_HEC_TOKEN=${SPLUNK_HEC_TOKEN}
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
+    ports:
+      - "8000:8000"
+      - "8088:8088"
+      - "8089:8089"
+    volumes:
+      - ./splunk/default.yml:/tmp/defaults/default.yml
+  
+  cribl-edge:
+    container_name: cribl
+    image: cribl/cribl:latest
+    environment:
+      - CRIBL_EDGE=1
+    ports:
+      - "9420:9420"
+      - "4317:4317"
+      - "57000:57000"
+      - "57001:57001"
+    volumes:
+      - /var/run/appscope:/var/run/appscope
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/hostfs:ro
+      - ./cribl/cribl/auth:/opt/cribl/local/cribl/auth
+    privileged: true
+    restart: unless-stopped
+
