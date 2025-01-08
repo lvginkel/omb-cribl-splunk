@@ -13,21 +13,44 @@ services:
     volumes:
       - ./splunk/default.yml:/tmp/defaults/default.yml
   
-  cribl-edge:
-    container_name: cribl
+  master:
     image: cribl/cribl:latest
     environment:
-      - CRIBL_EDGE=1
+      - CRIBL_DIST_MODE=master
+      - CRIBL_DIST_MASTER_URL=tcp://${CRIBL_DIST_TOKEN:-criblmaster}@0.0.0.0:4200
+      - CRIBL_VOLUME_DIR=/opt/cribl/config-volume
     ports:
-      - "9420:9420"
-      - "4317:4317"
-      - "57000:57000"
-      - "57001:57001"
+      - "19000:9000"
     volumes:
-      - /var/run/appscope:/var/run/appscope
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /:/hostfs:ro
-      - ./cribl/cribl/auth:/opt/cribl/local/cribl/auth
-    privileged: true
-    restart: unless-stopped
+      - "~/cribl-config:/opt/cribl/config-volume"
+  workers:
+    image: cribl/cribl:latest
+    depends_on: 
+      - master
+    environment:
+      - CRIBL_DIST_MODE=worker
+      - CRIBL_DIST_MASTER_URL=tcp://${CRIBL_DIST_TOKEN:-criblmaster}@master:4200
+    ports:
+      - 9000
+      - 57000
+      - 57001
+      - 10200
+
+  # cribl-edge:
+  #   container_name: cribl
+  #   image: cribl/cribl:latest
+  #   environment:
+  #     - CRIBL_EDGE=1
+  #   ports:
+  #     - "9420:9420"
+  #     - "4317:4317"
+  #     - "57000:57000"
+  #     - "57001:57001"
+  #   volumes:
+  #     - /var/run/appscope:/var/run/appscope
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /:/hostfs:ro
+  #     - ./cribl/cribl/auth:/opt/cribl/local/cribl/auth
+  #   privileged: true
+  #   restart: unless-stopped
 
